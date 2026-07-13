@@ -100,93 +100,111 @@ function App() {
   )
 
   return (
-    <main className="app-shell">
-      <section className="page-header" aria-labelledby="page-title">
-        <p className="eyebrow">Wowcher revenue aggregator</p>
-        <div className="header-row">
-          <div>
-            <h1 id="page-title">Product Revenue</h1>
-            <p className="intro">
-              Merged sales from all three branches, sorted by product name.
+    <>
+      <header className="site-header">
+        <div className="site-header__inner">
+          <a className="brand-mark" href="/" aria-label="Wowcher revenue home">
+            wowcher
+          </a>
+          <span className="header-label">Revenue dashboard</span>
+        </div>
+        <nav className="category-nav" aria-label="Wowcher sections">
+          <span>Local</span>
+          <span>Restaurants</span>
+          <span>Shopping</span>
+          <span>Holiday Deals</span>
+          <span>Guides</span>
+          <span>Near Me</span>
+        </nav>
+      </header>
+
+      <main className="app-shell">
+        <section className="page-header" aria-labelledby="page-title">
+          <div className="header-row">
+            <div>
+              <p className="eyebrow">Branch sales report</p>
+              <h1 id="page-title">Product Revenue</h1>
+              <p className="intro">
+                Merged sales from all three branches, sorted by product name.
+              </p>
+            </div>
+            <div className="summary-panel" aria-label="Displayed total revenue">
+              <span>Total revenue</span>
+              <strong>{formatNumber(displayedTotalRevenue)}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section className="table-section" aria-labelledby="table-title">
+          <div className="toolbar">
+            <h2 id="table-title">Products</h2>
+            <label className="search-control" htmlFor="product-search">
+              <span>Search</span>
+              <input
+                id="product-search"
+                name="search"
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Filter by product name"
+              />
+            </label>
+          </div>
+
+          {isLoading && <p className="state-message">Loading branch data...</p>}
+
+          {!isLoading && error && (
+            <p className="state-message error" role="alert">
+              {error}
             </p>
-          </div>
-          <div className="summary-panel" aria-label="Displayed total revenue">
-            <span>Total revenue</span>
-            <strong>{formatNumber(displayedTotalRevenue)}</strong>
-          </div>
-        </div>
-      </section>
+          )}
 
-      <section className="table-section" aria-labelledby="table-title">
-        <div className="toolbar">
-          <h2 id="table-title">Products</h2>
-          <label className="search-control" htmlFor="product-search">
-            <span>Search</span>
-            <input
-              id="product-search"
-              name="search"
-              type="search"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Filter by product name"
-            />
-          </label>
-        </div>
-
-        {isLoading && <p className="state-message">Loading branch data...</p>}
-
-        {!isLoading && error && (
-          <p className="state-message error" role="alert">
-            {error}
-          </p>
-        )}
-
-        {!isLoading && !error && (
-          <div className="table-wrap">
-            <table>
-              <caption>
-                Product revenue across branch1, branch2 and branch3
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Product name</th>
-                  <th scope="col" className="number-column">
-                    Total revenue
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProducts.map((product) => (
-                  <tr key={product.name}>
-                    <td>{product.name}</td>
-                    <td className="number-column">
-                      {formatNumber(product.revenue)}
-                    </td>
-                  </tr>
-                ))}
-                {filteredProducts.length === 0 && (
+          {!isLoading && !error && (
+            <div className="table-wrap">
+              <table>
+                <caption>
+                  Product revenue across branch1, branch2 and branch3
+                </caption>
+                <thead>
                   <tr>
-                    <td colSpan="2" className="empty-message">
-                      No products match your search.
+                    <th scope="col">Product name</th>
+                    <th scope="col" className="number-column">
+                      Total revenue
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((product) => (
+                    <tr key={product.name}>
+                      <td>{product.name}</td>
+                      <td className="number-column">
+                        {formatNumber(product.revenue)}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredProducts.length === 0 && (
+                    <tr>
+                      <td colSpan="2" className="empty-message">
+                        No products match your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th scope="row">Total</th>
+                    <td className="number-column">
+                      {formatNumber(displayedTotalRevenue)}
                     </td>
                   </tr>
-                )}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th scope="row">Total</th>
-                  <td className="number-column">
-                    {formatNumber(displayedTotalRevenue)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        )}
-      </section>
-    </main>
+                </tfoot>
+              </table>
+            </div>
+          )}
+        </section>
+      </main>
+    </>
   )
 }
 
 export default App
-
